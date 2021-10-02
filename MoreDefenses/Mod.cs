@@ -4,48 +4,94 @@
 // File:    MoreDefenses.cs
 // Project: MoreDefenses
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using BepInEx;
-using Jotunn.Entities;
+using HarmonyLib;
 using Jotunn.Managers;
+using Jotunn.Utils;
+using MoreDefenses.Models;
+using MoreDefenses.Services;
+using UnityEngine;
 
 namespace MoreDefenses
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInDependency(Jotunn.Main.ModGuid)]
-    //[NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.Minor)]
     internal class Mod : BaseUnityPlugin
     {
-        public const string PluginGUID = "com.jotunn.MoreDefenses";
-        public const string PluginName = "MoreDefenses";
-        public const string PluginVersion = "0.0.1";
+        public const string PluginGUID = "MeatwareMonster.MoreDefenses";
+        public const string PluginName = "More Defenses";
+        public const string PluginVersion = "1.0.0";
 
-        // Use this class to add your own localization to the game
-        // https://valheim-modding.github.io/Jotunn/tutorials/localization.html
-        public static CustomLocalization Localization = LocalizationManager.Instance.GetLocalization();
+        public static string ModLocation = Path.GetDirectoryName(typeof(Mod).Assembly.Location);
+
+        private readonly Harmony harmony = new Harmony(PluginGUID);
+
+        private readonly Dictionary<string, AssetBundle> AssetBundles = new Dictionary<string, AssetBundle>();
 
         private void Awake()
         {
-            // Jotunn comes with MonoMod Detours enabled for hooking Valheim's code
-            // https://github.com/MonoMod/MonoMod
-            On.FejdStartup.Awake += FejdStartup_Awake;
+            LoadAssetBundles();
+            AddTurrets();
+            UnloadAssetBundles();
 
-            // Jotunn comes with its own Logger class to provide a consistent Log style for all mods using it
-            Jotunn.Logger.LogInfo("ModStub has landed");
-
-            // To learn more about Jotunn's features, go to
-            // https://valheim-modding.github.io/Jotunn/tutorials/overview.html
+            harmony.PatchAll();
         }
 
-        private void FejdStartup_Awake(On.FejdStartup.orig_Awake orig, FejdStartup self)
+        private void LoadAssetBundles()
         {
-            // This code runs before Valheim's FejdStartup.Awake
-            Jotunn.Logger.LogInfo("FejdStartup is going to awake");
+            foreach (var file in Directory.GetFiles($"{ModLocation}/Assets/AssetBundles").Where(file => Path.GetFileName(file) != "__folder_managed_by_vortex"))
+            {
+                AssetBundles.Add(Path.GetFileName(file), AssetUtils.LoadAssetBundle(file));
+            }
+        }
 
-            // Call this method so the original game method is invoked
-            orig(self);
+        private void UnloadAssetBundles()
+        {
+            foreach (var assetBundle in AssetBundles)
+            {
+                assetBundle.Value.Unload(false);
+            }
+        }
 
-            // This code runs after Valheim's FejdStartup.Awake
-            Jotunn.Logger.LogInfo("FejdStartup has awoken");
+        private void AddTurrets()
+        {
+            var turretConfigs = new List<TurretConfig>();
+            var customConfigFiles = Directory.Exists($"{ModLocation}/Assets/CustomConfigs") ? Directory.GetFiles($"{ModLocation}/Assets/CustomConfigs").Where(file => Path.GetFileName(file) != "__folder_managed_by_vortex").ToDictionary(file => Path.GetFileName(file)) : new Dictionary<string, string>();
+
+            foreach (var file in Directory.GetFiles($"{ModLocation}/Assets/Configs").Where(file => Path.GetFileName(file) != "__folder_managed_by_vortex"))
+            {
+                string configPath;
+                if (customConfigFiles.TryGetValue(Path.GetFileName(file), out var customConfigFile))
+                {
+                    configPath = customConfigFile;
+                }
+                else
+                {
+                    configPath = file;
+                }
+
+                turretConfigs.AddRange(TurretConfigManager.LoadTurretsFromJson(configPath));
+            }
+
+            turretConfigs.ForEach(turretConfig =>
+            {
+                if (turretConfig.enabled)
+                {
+                    // Load prefab from asset bundle and apply config
+                    var prefab = AssetBundles[turretConfig.bundleName].LoadAsset<GameObject>(turretConfig.prefabPath);
+                    var turret = prefab.AddComponent<Turret>();
+                    var turretPiece = TurretConfig.Convert(prefab, turretConfig);
+
+                    // Jotunn code is currently not setting the description, potentially a bug
+                    turretPiece.Piece.m_description = turretConfig.description;
+
+                    PieceManager.Instance.AddPiece(turretPiece);
+                }
+            });
         }
     }
 }
