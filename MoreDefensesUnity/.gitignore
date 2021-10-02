@@ -82,4 +82,5 @@ crashlytics-build.properties
 # AssetBundles (manual copy these)
 /[Aa]ssetBundles*
 
-/[Aa]ssets/StoreAssets/Paid/
+/[Aa]ssets/StoreAssets/Paid/**/*.*
+!/[Aa]ssets/StoreAssets/Paid/**/*.meta
