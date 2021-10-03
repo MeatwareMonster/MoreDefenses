@@ -1,17 +1,11 @@
 [
   {
-    "name": "Titan",
-    "bundleName": "godships",
-    "prefabPath": "Assets/CustomItems/Steampunk/Titan.prefab",
-    "item": "Titan",
-    "description": "Feared by the gods.",
+    "name": "Turret",
+    "bundleName": "turrets",
+    "prefabPath": "Assets/MoreDefenses/Prefabs/Turret.prefab",
+    "item": "Turret",
+    "description": "Basic turret.",
     "pieceTable": "Hammer",
-    "mass": 1000000,
-    "thrust": 100,
-    "lift": 10,
-    "drag": 10,
-    "turnSpeed": 0.25,
-    "cameraDistance": 50,
     "enabled": true,
     "resources": [
       {
@@ -19,12 +13,8 @@
         "amount": 20
       },
       {
-        "item": "FineWood",
-        "amount": 100
-      },
-      {
         "item": "SurtlingCore",
-        "amount": 10
+        "amount": 5
       }
     ]
   }

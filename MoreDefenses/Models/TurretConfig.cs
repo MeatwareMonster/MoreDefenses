@@ -32,12 +32,6 @@ namespace MoreDefenses.Models
         public string prefabPath;
         public string description;
         public string pieceTable;
-        public float mass;
-        public float thrust;
-        public float lift;
-        public float drag;
-        public float turnSpeed;
-        public float cameraDistance;
         public bool enabled;
         public List<TurretConfigRequirement> resources;
 

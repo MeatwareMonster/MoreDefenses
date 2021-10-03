@@ -86,12 +86,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Assets\AssetBundles\turrets" />
     <None Include="Assets\Configs\turrets.json" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\AssetBundles\" />
+    <Folder Include="Assets\CustomConfigs\" />
     <Folder Include="Package\plugins\" />
     <Folder Include="Patches\" />
   </ItemGroup>
