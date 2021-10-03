@@ -5,10 +5,10 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     public float Range = 20f;
-    public float FireInterval = 1f;
+    public float FireInterval = 0.5f;
     public float Damage = 25f;
 
-    private readonly float TargetUpdateInterval = 2f;
+    private readonly float TargetUpdateInterval = 0.5f;
 
     private readonly int ViewBlockMask = LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "terrain", "viewblock", "vehicle");
     private Character Target;

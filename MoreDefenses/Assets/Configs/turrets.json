@@ -7,7 +7,7 @@
     "description": "Basic turret.",
     "pieceTable": "Hammer",
     "enabled": true,
-    "fireInterval": 1,
+    "fireInterval": 0.5,
     "damage": 25,
     "range":  20,
     "resources": [
