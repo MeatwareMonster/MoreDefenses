@@ -33,6 +33,9 @@ namespace MoreDefenses.Models
         public string description;
         public string pieceTable;
         public bool enabled;
+        public float fireInterval;
+        public float damage;
+        public float range;
         public List<TurretConfigRequirement> resources;
 
         public static CustomPiece Convert(GameObject prefab, TurretConfig turretConfig)

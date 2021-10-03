@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
-    private float Range = 100f;
-    private float TargetUpdateInterval = 5f;
-    private float ShootInterval = 5f;
-    private HitData.DamageTypes Damage = new HitData.DamageTypes
-    {
-        m_damage = 5f
-    };
+    public float Range = 20f;
+    public float FireInterval = 1f;
+    public float Damage = 5f;
+
+    private readonly float TargetUpdateInterval = 2f;
 
     private readonly int ViewBlockMask = LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "terrain", "viewblock", "vehicle");
     private Character Target;
@@ -75,16 +73,18 @@ public class Turret : MonoBehaviour
                     }
                     else
                     {
-                        Jotunn.Logger.LogDebug("Shoot");
-                        AudioSource.Play();
-                        ParticleSystem.Play();
+                        Jotunn.Logger.LogDebug("Fire");
+                        m_nview.InvokeRPC(ZNetView.Everybody, "Fire");
                         Target.Damage(new HitData
                         {
-                            m_damage = Damage
+                            m_damage = new HitData.DamageTypes
+                            {
+                                m_damage = Damage
+                            }
                         });
                     }
 
-                    ShootTimer = ShootInterval;
+                    ShootTimer = FireInterval;
                 }
             }
         }
@@ -98,7 +98,7 @@ public class Turret : MonoBehaviour
         List<Character> allCharacters = Character.GetAllCharacters();
         foreach (Character character in allCharacters)
         {
-            if (character.m_faction == Character.Faction.Players && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
+            if (character.m_faction != Character.Faction.Players && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
             {
                 Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
                 Target = character;
@@ -120,6 +120,7 @@ public class Turret : MonoBehaviour
 
     private void RPC_Fire(long sender)
     {
-
+        AudioSource.Play();
+        ParticleSystem.Play();
     }
 }
