@@ -1,14 +1,14 @@
 [
   {
-    "name": "Turret",
+    "name": "Basic Turret",
     "bundleName": "turrets",
-    "prefabPath": "Assets/MoreDefenses/Prefabs/Turret.prefab",
-    "item": "Turret",
+    "prefabPath": "Assets/MoreDefenses/Prefabs/BasicTurret.prefab",
+    "item": "BasicTurret",
     "description": "Basic turret.",
     "pieceTable": "Hammer",
     "enabled": true,
     "fireInterval": 1,
-    "damage": 5,
+    "damage": 25,
     "range":  20,
     "resources": [
       {
