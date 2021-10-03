@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
     public float Range = 20f;
     public float FireInterval = 1f;
-    public float Damage = 5f;
+    public float Damage = 25f;
 
     private readonly float TargetUpdateInterval = 2f;
 
@@ -47,7 +48,7 @@ public class Turret : MonoBehaviour
         {
             if (UpdateTargetTimer < 0)
             {
-                FindTarget();
+                StartCoroutine(FindTarget());
                 UpdateTargetTimer = TargetUpdateInterval;
             }
         }
@@ -66,7 +67,7 @@ public class Turret : MonoBehaviour
 
                 if (ShootTimer < 0)
                 {
-                    if (!CanSeeCharacter(Target))
+                    if (!IsCharacterInRange(Target) || !CanSeeCharacter(Target))
                     {
                         Target = null;
                         Jotunn.Logger.LogDebug("Target lost");
@@ -93,7 +94,7 @@ public class Turret : MonoBehaviour
         ShootTimer -= Time.deltaTime;
     }
 
-    private void FindTarget()
+    private IEnumerator FindTarget()
     {
         List<Character> allCharacters = Character.GetAllCharacters();
         foreach (Character character in allCharacters)
@@ -102,7 +103,7 @@ public class Turret : MonoBehaviour
             {
                 Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
                 Target = character;
-                return;
+                yield break;
             }
         }
     }
