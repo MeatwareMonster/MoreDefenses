@@ -92,7 +92,6 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\CustomConfigs\" />
     <Folder Include="Package\plugins\" />
     <Folder Include="Patches\" />
   </ItemGroup>

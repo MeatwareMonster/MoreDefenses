@@ -2,7 +2,7 @@
   {
     "name": "Basic Turret",
     "bundleName": "turrets",
-    "prefabPath": "Assets/MoreDefenses/Prefabs/BasicTurret.prefab",
+    "prefabPath": "Assets/_Project/Prefabs/BasicTurret.prefab",
     "item": "BasicTurret",
     "description": "Basic turret.",
     "pieceTable": "Hammer",
