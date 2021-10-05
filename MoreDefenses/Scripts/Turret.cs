@@ -9,39 +9,39 @@ public class Turret : MonoBehaviour
     public float FireInterval = 0.5f;
     public float Damage = 25f;
 
-    private readonly float TargetUpdateInterval = 0.5f;
+    private readonly float m_targetUpdateInterval = 0.5f;
 
-    private readonly int ViewBlockMask = LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "terrain", "viewblock", "vehicle");
-    private Character Target;
-    private float UpdateTargetTimer;
-    private float ShootTimer;
+    private readonly int m_viewBlockMask = LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "terrain", "viewblock", "vehicle");
+    private Character m_target;
+    private float m_updateTargetTimer;
+    private float m_shootTimer;
 
-    private AudioSource AudioSource;
-    private ParticleSystem ParticleSystem;
-    private Bounds Bounds;
+    private AudioSource m_audioSource;
+    private ParticleSystem m_particleSystem;
+    private Bounds m_bounds;
 
     private ZNetView m_nview;
 
     // Debug targeting
-    //private LineRenderer LineRenderer;
+    //private LineRenderer m_lineRenderer;
 
     private void Awake()
     {
         // Debug targeting
-        //LineRenderer = gameObject.AddComponent<LineRenderer>();
-        //LineRenderer.startWidth = 0.1f;
-        //LineRenderer.endWidth = 0.1f;
+        //m_lineRenderer = gameObject.AddComponent<LineRenderer>();
+        //m_lineRenderer.startWidth = 0.1f;
+        //m_lineRenderer.endWidth = 0.1f;
 
-        AudioSource = GetComponent<AudioSource>();
-        AudioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
+        m_audioSource = GetComponent<AudioSource>();
+        m_audioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
         SetVolume();
         Mod.TurretVolume.SettingChanged += (sender, e) =>
         {
             SetVolume();
         };
 
-        ParticleSystem = GetComponentInChildren<ParticleSystem>();
-        Bounds = GetComponent<BoxCollider>().bounds;
+        m_particleSystem = GetComponentInChildren<ParticleSystem>();
+        m_bounds = GetComponent<BoxCollider>().bounds;
 
         m_nview = GetComponent<ZNetView>();
         m_nview.Register("Fire", RPC_Fire);
@@ -49,7 +49,7 @@ public class Turret : MonoBehaviour
 
     private void SetVolume()
     {
-        AudioSource.volume = Mod.TurretVolume.Value / 100f * 0.25f;
+        m_audioSource.volume = Mod.TurretVolume.Value * 0.0025f;
     }
 
     private void Update()
@@ -59,40 +59,41 @@ public class Turret : MonoBehaviour
             return;
         }
 
-        if (Target == null)
+        if (m_target == null)
         {
-            if (UpdateTargetTimer < 0)
+            if (m_updateTargetTimer < 0)
             {
                 StartCoroutine(FindTarget());
-                UpdateTargetTimer = TargetUpdateInterval;
+                m_updateTargetTimer = m_targetUpdateInterval;
             }
         }
 
-        if (Target != null)
+        if (m_target != null)
         {
-            if (Target.IsDead())
+            if (m_target.IsDead())
             {
-                Target = null;
+                m_target = null;
             }
             else
             {
                 // Debug targeting
-                //LineRenderer.SetPosition(0, Bounds.center);
-                //LineRenderer.SetPosition(1, Target.GetCenterPoint());
-                transform.LookAt(Target.transform);
+                //m_lineRenderer.SetPosition(0, Bounds.center);
+                //m_lineRenderer.SetPosition(1, Target.GetCenterPoint());
 
-                if (ShootTimer < 0)
+                transform.LookAt(m_target.transform);
+
+                if (m_shootTimer < 0)
                 {
-                    if (!IsCharacterInRange(Target) || !CanSeeCharacter(Target))
+                    if (!IsCharacterInRange(m_target) || !CanSeeCharacter(m_target))
                     {
-                        Target = null;
+                        m_target = null;
                         Jotunn.Logger.LogDebug("Target lost");
                     }
                     else
                     {
                         Jotunn.Logger.LogDebug("Fire");
                         m_nview.InvokeRPC(ZNetView.Everybody, "Fire");
-                        Target.Damage(new HitData
+                        m_target.Damage(new HitData
                         {
                             m_damage = new HitData.DamageTypes
                             {
@@ -101,13 +102,13 @@ public class Turret : MonoBehaviour
                         });
                     }
 
-                    ShootTimer = FireInterval;
+                    m_shootTimer = FireInterval;
                 }
             }
         }
 
-        UpdateTargetTimer -= Time.deltaTime;
-        ShootTimer -= Time.deltaTime;
+        m_updateTargetTimer -= Time.deltaTime;
+        m_shootTimer -= Time.deltaTime;
     }
 
     private IEnumerator FindTarget()
@@ -118,7 +119,7 @@ public class Turret : MonoBehaviour
             if (character.m_faction != Character.Faction.Players && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
             {
                 Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
-                Target = character;
+                m_target = character;
                 yield break;
             }
         }
@@ -131,18 +132,18 @@ public class Turret : MonoBehaviour
 
     private bool CanSeeCharacter(Character character)
     {
-        var vector = character.GetCenterPoint() - Bounds.center;
-        return !Physics.Raycast(Bounds.center, vector.normalized, vector.magnitude, ViewBlockMask);
+        var vector = character.GetCenterPoint() - m_bounds.center;
+        return !Physics.Raycast(m_bounds.center, vector.normalized, vector.magnitude, m_viewBlockMask);
     }
 
     private void RPC_Fire(long sender)
     {
-        AudioSource.Play();
-        ParticleSystem.Play();
+        m_audioSource.Play();
+        m_particleSystem.Play();
     }
 
     public void SetVolume(float volume)
     {
-        AudioSource.volume = volume / 100 * 0.25f;
+        m_audioSource.volume = volume / 100 * 0.25f;
     }
 }

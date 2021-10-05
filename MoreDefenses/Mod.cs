@@ -27,36 +27,36 @@ namespace MoreDefenses
         public const string PluginName = "More Defenses";
         public const string PluginVersion = "1.0.0";
 
-        public static ConfigEntry<float> TurretVolume;
+        public static ConfigEntry<int> TurretVolume;
 
         public static string ModLocation = Path.GetDirectoryName(typeof(Mod).Assembly.Location);
 
-        private readonly Harmony harmony = new Harmony(PluginGUID);
+        private readonly Harmony m_harmony = new Harmony(PluginGUID);
 
-        private readonly Dictionary<string, AssetBundle> AssetBundles = new Dictionary<string, AssetBundle>();
+        private readonly Dictionary<string, AssetBundle> m_assetBundles = new Dictionary<string, AssetBundle>();
 
         private void Awake()
         {
-            TurretVolume = Config.Bind("General", "Turret Volume", 100f, new ConfigDescription("Independent turret volume control.", new AcceptableValueRange<float>(0, 100)));
+            TurretVolume = Config.Bind("General", "Turret Volume", 100, new ConfigDescription("Independent turret volume control.", new AcceptableValueRange<int>(0, 100)));
 
             LoadAssetBundles();
             AddTurrets();
             UnloadAssetBundles();
 
-            harmony.PatchAll();
+            m_harmony.PatchAll();
         }
 
         private void LoadAssetBundles()
         {
             foreach (var file in Directory.GetFiles($"{ModLocation}/Assets/AssetBundles").Where(file => Path.GetFileName(file) != "__folder_managed_by_vortex"))
             {
-                AssetBundles.Add(Path.GetFileName(file), AssetUtils.LoadAssetBundle(file));
+                m_assetBundles.Add(Path.GetFileName(file), AssetUtils.LoadAssetBundle(file));
             }
         }
 
         private void UnloadAssetBundles()
         {
-            foreach (var assetBundle in AssetBundles)
+            foreach (var assetBundle in m_assetBundles)
             {
                 assetBundle.Value.Unload(false);
             }
@@ -76,7 +76,7 @@ namespace MoreDefenses
                 if (turretConfig.enabled)
                 {
                     // Load prefab from asset bundle and apply config
-                    var prefab = AssetBundles[turretConfig.bundleName].LoadAsset<GameObject>(turretConfig.prefabPath);
+                    var prefab = m_assetBundles[turretConfig.bundleName].LoadAsset<GameObject>(turretConfig.prefabPath);
                     var turret = prefab.AddComponent<Turret>();
                     turret.Range = turretConfig.range;
                     turret.Damage = turretConfig.damage;
