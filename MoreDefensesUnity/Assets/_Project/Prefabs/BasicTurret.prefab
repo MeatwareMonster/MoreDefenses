@@ -86,7 +86,7 @@ MonoBehaviour:
   m_primaryTarget: 1
   m_randomTarget: 0
   m_targetNonPlayerBuilt: 0
-  m_icon: {fileID: 21300000, guid: bb91795288ba85241831bc57e84ae78d, type: 3}
+  m_icon: {fileID: 21300000, guid: bda7d9422aeb69045bc33569ead65427, type: 3}
   m_name: Turret
   m_description: 
   m_enabled: 1
@@ -192,7 +192,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: b153325db6ad1f845901aac41819cfe4, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0

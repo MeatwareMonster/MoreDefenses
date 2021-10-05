@@ -21,15 +21,20 @@ public class Turret : MonoBehaviour
 
     private ZNetView m_nview;
 
-    private LineRenderer LineRenderer;
+    // Debug targeting
+    //private LineRenderer LineRenderer;
 
     private void Awake()
     {
-        LineRenderer = gameObject.AddComponent<LineRenderer>();
-        LineRenderer.startWidth = 0.1f;
-        LineRenderer.endWidth = 0.1f;
+        // Debug targeting
+        //LineRenderer = gameObject.AddComponent<LineRenderer>();
+        //LineRenderer.startWidth = 0.1f;
+        //LineRenderer.endWidth = 0.1f;
 
         AudioSource = GetComponent<AudioSource>();
+        AudioSource.volume = 0.25f;
+        AudioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
+
         ParticleSystem = GetComponentInChildren<ParticleSystem>();
         Bounds = GetComponent<BoxCollider>().bounds;
 
@@ -39,7 +44,7 @@ public class Turret : MonoBehaviour
 
     private void Update()
     {
-        if (!m_nview.IsOwner())
+        if (m_nview == null || !m_nview.IsOwner())
         {
             return;
         }
@@ -61,8 +66,9 @@ public class Turret : MonoBehaviour
             }
             else
             {
-                LineRenderer.SetPosition(0, Bounds.center);
-                LineRenderer.SetPosition(1, Target.GetCenterPoint());
+                // Debug targeting
+                //LineRenderer.SetPosition(0, Bounds.center);
+                //LineRenderer.SetPosition(1, Target.GetCenterPoint());
                 transform.LookAt(Target.transform);
 
                 if (ShootTimer < 0)
