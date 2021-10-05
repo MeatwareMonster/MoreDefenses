@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using MoreDefenses;
 using UnityEngine;
@@ -35,10 +36,7 @@ public class Turret : MonoBehaviour
         m_audioSource = GetComponent<AudioSource>();
         m_audioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
         SetVolume();
-        Mod.TurretVolume.SettingChanged += (sender, e) =>
-        {
-            SetVolume();
-        };
+        Mod.TurretVolume.SettingChanged += SetVolume;
 
         m_particleSystem = GetComponentInChildren<ParticleSystem>();
         m_bounds = GetComponent<BoxCollider>().bounds;
@@ -47,9 +45,20 @@ public class Turret : MonoBehaviour
         m_nview.Register("Fire", RPC_Fire);
     }
 
+    private void SetVolume(object sender, EventArgs e)
+    {
+        SetVolume();
+    }
+
     private void SetVolume()
     {
+        //Jotunn.Logger.LogDebug(Mod.TurretVolume.Value);
         m_audioSource.volume = Mod.TurretVolume.Value * 0.0025f;
+    }
+
+    private void OnDestroy()
+    {
+        Mod.TurretVolume.SettingChanged -= SetVolume;
     }
 
     private void Update()
@@ -87,11 +96,11 @@ public class Turret : MonoBehaviour
                     if (!IsCharacterInRange(m_target) || !CanSeeCharacter(m_target))
                     {
                         m_target = null;
-                        Jotunn.Logger.LogDebug("Target lost");
+                        //Jotunn.Logger.LogDebug("Target lost");
                     }
                     else
                     {
-                        Jotunn.Logger.LogDebug("Fire");
+                        //Jotunn.Logger.LogDebug("Fire");
                         m_nview.InvokeRPC(ZNetView.Everybody, "Fire");
                         m_target.Damage(new HitData
                         {
@@ -118,7 +127,7 @@ public class Turret : MonoBehaviour
         {
             if (character.m_faction != Character.Faction.Players && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
             {
-                Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
+                //Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
                 m_target = character;
                 yield break;
             }
