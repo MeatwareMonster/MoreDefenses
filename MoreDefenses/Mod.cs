@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
 using HarmonyLib;
 using Jotunn.Managers;
 using Jotunn.Utils;
@@ -26,6 +27,8 @@ namespace MoreDefenses
         public const string PluginName = "More Defenses";
         public const string PluginVersion = "1.0.0";
 
+        public static ConfigEntry<float> TurretVolume;
+
         public static string ModLocation = Path.GetDirectoryName(typeof(Mod).Assembly.Location);
 
         private readonly Harmony harmony = new Harmony(PluginGUID);
@@ -34,6 +37,8 @@ namespace MoreDefenses
 
         private void Awake()
         {
+            TurretVolume = Config.Bind("General", "Turret Volume", 100f, new ConfigDescription("Independent turret volume control.", new AcceptableValueRange<float>(0, 100)));
+
             LoadAssetBundles();
             AddTurrets();
             UnloadAssetBundles();

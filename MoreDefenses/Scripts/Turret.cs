@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MoreDefenses;
 using UnityEngine;
 
 public class Turret : MonoBehaviour
@@ -32,14 +33,23 @@ public class Turret : MonoBehaviour
         //LineRenderer.endWidth = 0.1f;
 
         AudioSource = GetComponent<AudioSource>();
-        AudioSource.volume = 0.25f;
         AudioSource.outputAudioMixerGroup = AudioMan.instance.m_ambientMixer;
+        SetVolume();
+        Mod.TurretVolume.SettingChanged += (sender, e) =>
+        {
+            SetVolume();
+        };
 
         ParticleSystem = GetComponentInChildren<ParticleSystem>();
         Bounds = GetComponent<BoxCollider>().bounds;
 
         m_nview = GetComponent<ZNetView>();
         m_nview.Register("Fire", RPC_Fire);
+    }
+
+    private void SetVolume()
+    {
+        AudioSource.volume = Mod.TurretVolume.Value / 100f * 0.25f;
     }
 
     private void Update()
@@ -129,5 +139,10 @@ public class Turret : MonoBehaviour
     {
         AudioSource.Play();
         ParticleSystem.Play();
+    }
+
+    public void SetVolume(float volume)
+    {
+        AudioSource.volume = volume / 100 * 0.25f;
     }
 }
