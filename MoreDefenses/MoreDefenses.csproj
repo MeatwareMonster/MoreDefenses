@@ -81,6 +81,7 @@
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\CustomGuardStone.cs" />
     <Compile Include="Scripts\Turret.cs" />
     <Compile Include="Services\TurretConfigManager.cs" />
   </ItemGroup>
