@@ -1,7 +1,10 @@
 ﻿{
   "name": "MoreDefenses",
-  "description": "",
-  "version_number": "0.0.1",
-  "website_url": "",
-  "dependencies": ["denikson-BepInExPack_Valheim-5.4.1502", ""]
+  "description": "Adds more defenses, such as gun turrets.",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/MeatwareMonster",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.1502",
+    "ValheimModding-Jotunn-2.3.7"
+  ]
 }
