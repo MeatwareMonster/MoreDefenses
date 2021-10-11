@@ -8,6 +8,6 @@ Tested with dedicated servers, and only required by clients. But probably don't 
 
 Works very well with ValheimRAFT to create gunboats.
 
-Discord: https://discord.gg/xcCnhNf4hN
-Trial server: Coming Soon
+Discord: https://discord.gg/xcCnhNf4hN \
+Trial server: Coming Soon \
 Code: https://github.com/MeatwareMonster/MoreDefenses

@@ -125,7 +125,7 @@ public class Turret : MonoBehaviour
         List<Character> allCharacters = Character.GetAllCharacters();
         foreach (Character character in allCharacters)
         {
-            if (character.m_faction != Character.Faction.Players && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
+            if (character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
             {
                 //Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
                 m_target = character;
