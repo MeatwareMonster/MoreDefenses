@@ -35,7 +35,13 @@ namespace MoreDefenses.Models
         public bool enabled;
         public float fireInterval;
         public float damage;
+        public float fireDamage;
+        public float frostDamage;
+        public float lightningDamage;
+        public float poisonDamage;
+        public float spiritDamage;
         public float range;
+        public float damageRadius;
         public List<TurretConfigRequirement> resources;
 
         public static CustomPiece Convert(GameObject prefab, TurretConfig turretConfig)

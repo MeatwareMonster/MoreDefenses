@@ -8,17 +8,27 @@ public class Turret : MonoBehaviour
 {
     public float Range = 20f;
     public float FireInterval = 0.5f;
-    public float Damage = 25f;
+    public float Damage = 0f;
+    public float FireDamage = 0f;
+    public float FrostDamage = 0f;
+    public float LightningDamage = 0f;
+    public float PoisonDamage = 0f;
+    public float SpiritDamage = 0f;
+    public float DamageRadius = 0f;
+
+    private HitData m_hitData;
 
     private readonly float m_targetUpdateInterval = 0.5f;
 
     private readonly int m_viewBlockMask = LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "terrain", "viewblock", "vehicle");
+    private readonly int m_rayMaskSolids = LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "piece_nonsolid", "terrain", "character", "character_net", "character_ghost", "hitbox", "character_noenv", "vehicle");
     private Character m_target;
     private float m_updateTargetTimer;
     private float m_shootTimer;
 
     private AudioSource m_audioSource;
-    private ParticleSystem m_particleSystem;
+    private ParticleSystem m_outputParticleSystem;
+    private ParticleSystem m_impactParticleSystem;
     private Bounds m_bounds;
 
     private ZNetView m_nview;
@@ -38,11 +48,27 @@ public class Turret : MonoBehaviour
         SetVolume();
         Mod.TurretVolume.SettingChanged += SetVolume;
 
-        m_particleSystem = GetComponentInChildren<ParticleSystem>();
+        m_outputParticleSystem = transform.Find("OutputParticleSystem")?.GetComponent<ParticleSystem>();
+        if (m_outputParticleSystem == null) m_outputParticleSystem = transform.Find("Particle System")?.GetComponent<ParticleSystem>();
+
+        m_impactParticleSystem = transform.Find("ImpactParticleSystem")?.GetComponent<ParticleSystem>();
         m_bounds = GetComponent<BoxCollider>().bounds;
 
         m_nview = GetComponent<ZNetView>();
         m_nview.Register("Fire", RPC_Fire);
+
+        m_hitData = new HitData
+        {
+            m_damage = new HitData.DamageTypes
+            {
+                m_damage = Damage,
+                m_fire = FireDamage,
+                m_frost = FrostDamage,
+                m_lightning = LightningDamage,
+                m_poison = PoisonDamage,
+                m_spirit = SpiritDamage
+            }
+        };
     }
 
     private void SetVolume(object sender, EventArgs e)
@@ -53,7 +79,7 @@ public class Turret : MonoBehaviour
     private void SetVolume()
     {
         //Jotunn.Logger.LogDebug(Mod.TurretVolume.Value);
-        m_audioSource.volume = Mod.TurretVolume.Value * 0.0025f;
+        m_audioSource.volume = Mod.TurretVolume.Value * 0.005f;
     }
 
     private void OnDestroy()
@@ -102,13 +128,14 @@ public class Turret : MonoBehaviour
                     {
                         //Jotunn.Logger.LogDebug("Fire");
                         m_nview.InvokeRPC(ZNetView.Everybody, "Fire");
-                        m_target.Damage(new HitData
+                        if (DamageRadius == 0)
                         {
-                            m_damage = new HitData.DamageTypes
-                            {
-                                m_damage = Damage
-                            }
-                        });
+                            m_target.Damage(m_hitData);
+                        }
+                        else
+                        {
+                            DamageAreaTargets(m_target.transform.position);
+                        }
                     }
 
                     m_shootTimer = FireInterval;
@@ -148,11 +175,29 @@ public class Turret : MonoBehaviour
     private void RPC_Fire(long sender)
     {
         m_audioSource.Play();
-        m_particleSystem.Play();
+        m_outputParticleSystem.Play();
+        if (m_impactParticleSystem != null)
+        {
+            m_impactParticleSystem.transform.position = m_target.transform.position;
+            m_impactParticleSystem.Play();
+        }
     }
 
     public void SetVolume(float volume)
     {
         m_audioSource.volume = volume / 100 * 0.25f;
+    }
+
+    private void DamageAreaTargets(Vector3 position)
+    {
+        var hits = Physics.OverlapSphere(position, DamageRadius, m_rayMaskSolids);
+        foreach (var hit in hits)
+        {
+            var character = hit.GetComponent<Character>();
+            if (character != null && character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead())
+            {
+                character.Damage(m_hitData);
+            }
+        }
     }
 }

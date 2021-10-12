@@ -9,7 +9,7 @@
     "enabled": true,
     "fireInterval": 0.5,
     "damage": 25,
-    "range":  20,
+    "range": 20,
     "resources": [
       {
         "item": "Iron",
@@ -18,6 +18,29 @@
       {
         "item": "SurtlingCore",
         "amount": 5
+      }
+    ]
+  },
+  {
+    "name": "Frost Cannon",
+    "bundleName": "turrets",
+    "prefabPath": "Assets/_Project/Prefabs/FrostCannon.prefab",
+    "item": "FrostCannon",
+    "description": "A cannon that fires pure ice.",
+    "pieceTable": "Hammer",
+    "enabled": true,
+    "fireInterval": 2,
+    "frostDamage": 25,
+    "range": 20,
+    "damageRadius":  4,
+    "resources": [
+      {
+        "item": "Silver",
+        "amount": 20
+      },
+      {
+        "item": "FreezeGland",
+        "amount": 10
       }
     ]
   }
