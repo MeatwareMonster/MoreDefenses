@@ -29,6 +29,7 @@ public class Turret : MonoBehaviour
     private AudioSource m_audioSource;
     private ParticleSystem m_outputParticleSystem;
     private ParticleSystem m_impactParticleSystem;
+    private ParticleSystem m_projectileParticleSystem;
     private Bounds m_bounds;
 
     private ZNetView m_nview;
@@ -48,10 +49,7 @@ public class Turret : MonoBehaviour
         SetVolume();
         Mod.TurretVolume.SettingChanged += SetVolume;
 
-        m_outputParticleSystem = transform.Find("OutputParticleSystem")?.GetComponent<ParticleSystem>();
-        if (m_outputParticleSystem == null) m_outputParticleSystem = transform.Find("Particle System")?.GetComponent<ParticleSystem>();
 
-        m_impactParticleSystem = transform.Find("ImpactParticleSystem")?.GetComponent<ParticleSystem>();
         m_bounds = GetComponent<BoxCollider>().bounds;
 
         m_nview = GetComponent<ZNetView>();
@@ -69,6 +67,18 @@ public class Turret : MonoBehaviour
                 m_spirit = SpiritDamage
             }
         };
+
+        m_outputParticleSystem = transform.Find("OutputParticleSystem")?.GetComponent<ParticleSystem>();
+        if (m_outputParticleSystem == null) m_outputParticleSystem = transform.Find("Particle System")?.GetComponent<ParticleSystem>();
+
+        m_impactParticleSystem = transform.Find("ImpactParticleSystem")?.GetComponent<ParticleSystem>();
+
+        m_projectileParticleSystem = transform.Find("ProjectileParticleSystem")?.GetComponent<ParticleSystem>();
+        if (m_projectileParticleSystem != null)
+        {
+            var projectileParticle = m_projectileParticleSystem.gameObject.AddComponent<ProjectileParticle>();
+            projectileParticle.HitData = m_hitData;
+        }
     }
 
     private void SetVolume(object sender, EventArgs e)
@@ -128,13 +138,16 @@ public class Turret : MonoBehaviour
                     {
                         //Jotunn.Logger.LogDebug("Fire");
                         m_nview.InvokeRPC(ZNetView.Everybody, "Fire");
-                        if (DamageRadius == 0)
+                        if (m_projectileParticleSystem == null)
                         {
-                            m_target.Damage(m_hitData);
-                        }
-                        else
-                        {
-                            DamageAreaTargets(m_target.transform.position);
+                            if (DamageRadius == 0)
+                            {
+                                m_target.Damage(m_hitData);
+                            }
+                            else
+                            {
+                                DamageAreaTargets(m_target.transform.position);
+                            }
                         }
                     }
 
@@ -175,7 +188,8 @@ public class Turret : MonoBehaviour
     private void RPC_Fire(long sender)
     {
         m_audioSource.Play();
-        m_outputParticleSystem.Play();
+        if (m_outputParticleSystem != null) m_outputParticleSystem.Play();
+        if (m_projectileParticleSystem != null) m_projectileParticleSystem.Play();
         if (m_impactParticleSystem != null)
         {
             m_impactParticleSystem.transform.position = m_target.transform.position;
@@ -193,8 +207,7 @@ public class Turret : MonoBehaviour
         var hits = Physics.OverlapSphere(position, DamageRadius, m_rayMaskSolids);
         foreach (var hit in hits)
         {
-            var character = hit.GetComponent<Character>();
-            if (character != null && character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead())
+            if (hit.TryGetComponent(out Character character) && character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead())
             {
                 character.Damage(m_hitData);
             }

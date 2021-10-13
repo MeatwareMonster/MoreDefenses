@@ -22,6 +22,28 @@
     ]
   },
   {
+    "name": "Ballista",
+    "bundleName": "turrets",
+    "prefabPath": "Assets/_Project/Prefabs/Ballista.prefab",
+    "item": "Ballista",
+    "description": "Possessed ballista. Seems to have good intentions.",
+    "pieceTable": "Hammer",
+    "enabled": true,
+    "fireInterval": 0.5,
+    "damage": 25,
+    "range": 20,
+    "resources": [
+      {
+        "item": "Iron",
+        "amount": 20
+      },
+      {
+        "item": "SurtlingCore",
+        "amount": 5
+      }
+    ]
+  },
+  {
     "name": "Frost Cannon",
     "bundleName": "turrets",
     "prefabPath": "Assets/_Project/Prefabs/FrostCannon.prefab",
@@ -32,7 +54,7 @@
     "fireInterval": 2,
     "frostDamage": 25,
     "range": 20,
-    "damageRadius":  4,
+    "damageRadius": 4,
     "resources": [
       {
         "item": "Silver",
