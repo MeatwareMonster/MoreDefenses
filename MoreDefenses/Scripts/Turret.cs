@@ -81,6 +81,7 @@ public class Turret : MonoBehaviour
         {
             var projectileParticle = m_projectileParticleSystem.gameObject.AddComponent<ProjectileParticle>();
             projectileParticle.HitData = m_hitData;
+            projectileParticle.SourceTurret = this;
         }
     }
 
@@ -96,6 +97,16 @@ public class Turret : MonoBehaviour
         SpiritDamage = turretConfig.spiritDamage;
         FireInterval = turretConfig.fireInterval;
         DamageRadius = turretConfig.damageRadius;
+    }
+
+    public bool IsOwner()
+    {
+        if (m_nview == null || !m_nview.IsOwner())
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void SetVolume(object sender, EventArgs e)
