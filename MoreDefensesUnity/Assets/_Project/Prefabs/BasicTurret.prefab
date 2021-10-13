@@ -87,7 +87,7 @@ MonoBehaviour:
   m_randomTarget: 0
   m_targetNonPlayerBuilt: 0
   m_icon: {fileID: 21300000, guid: bda7d9422aeb69045bc33569ead65427, type: 3}
-  m_name: Turret
+  m_name: Steampunk Turret
   m_description: 
   m_enabled: 1
   m_category: 2

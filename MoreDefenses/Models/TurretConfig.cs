@@ -35,6 +35,7 @@ namespace MoreDefenses.Models
         public bool enabled;
         public float fireInterval;
         public float damage;
+        public float pierceDamage;
         public float fireDamage;
         public float frostDamage;
         public float lightningDamage;
@@ -50,6 +51,7 @@ namespace MoreDefenses.Models
                 true,
                 new PieceConfig
                 {
+                    Name = turretConfig.name,
                     Description = turretConfig.description,
                     Enabled = turretConfig.enabled,
                     PieceTable = turretConfig.pieceTable,

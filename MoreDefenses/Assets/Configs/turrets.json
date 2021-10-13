@@ -1,27 +1,5 @@
 [
   {
-    "name": "Basic Turret",
-    "bundleName": "turrets",
-    "prefabPath": "Assets/_Project/Prefabs/BasicTurret.prefab",
-    "item": "BasicTurret",
-    "description": "Basic turret.",
-    "pieceTable": "Hammer",
-    "enabled": true,
-    "fireInterval": 0.5,
-    "damage": 25,
-    "range": 20,
-    "resources": [
-      {
-        "item": "Iron",
-        "amount": 20
-      },
-      {
-        "item": "SurtlingCore",
-        "amount": 5
-      }
-    ]
-  },
-  {
     "name": "Ballista",
     "bundleName": "turrets",
     "prefabPath": "Assets/_Project/Prefabs/Ballista.prefab",
@@ -29,7 +7,29 @@
     "description": "Possessed ballista. Seems to have good intentions.",
     "pieceTable": "Hammer",
     "enabled": true,
-    "fireInterval": 0.5,
+    "fireInterval": 2,
+    "pierceDamage": 40,
+    "range": 20,
+    "resources": [
+      {
+        "item": "Bronze",
+        "amount": 20
+      },
+      {
+        "item": "FineWood",
+        "amount": 20
+      }
+    ]
+  },
+  {
+    "name": "Steampunk Turret",
+    "bundleName": "turrets",
+    "prefabPath": "Assets/_Project/Prefabs/BasicTurret.prefab",
+    "item": "BasicTurret",
+    "description": "Powered by the ancient magic of combustion.",
+    "pieceTable": "Hammer",
+    "enabled": true,
+    "fireInterval": 1,
     "damage": 25,
     "range": 20,
     "resources": [
@@ -51,7 +51,7 @@
     "description": "A cannon that fires pure ice.",
     "pieceTable": "Hammer",
     "enabled": true,
-    "fireInterval": 2,
+    "fireInterval": 3,
     "frostDamage": 25,
     "range": 20,
     "damageRadius": 4,

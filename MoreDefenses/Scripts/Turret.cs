@@ -9,6 +9,7 @@ public class Turret : MonoBehaviour
     public float Range = 20f;
     public float FireInterval = 0.5f;
     public float Damage = 0f;
+    public float PierceDamage = 0f;
     public float FireDamage = 0f;
     public float FrostDamage = 0f;
     public float LightningDamage = 0f;
@@ -60,6 +61,7 @@ public class Turret : MonoBehaviour
             m_damage = new HitData.DamageTypes
             {
                 m_damage = Damage,
+                m_pierce = PierceDamage,
                 m_fire = FireDamage,
                 m_frost = FrostDamage,
                 m_lightning = LightningDamage,

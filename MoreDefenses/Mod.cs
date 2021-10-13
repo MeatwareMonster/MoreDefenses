@@ -80,6 +80,7 @@ namespace MoreDefenses
                     var turret = prefab.AddComponent<Turret>();
                     turret.Range = turretConfig.range;
                     turret.Damage = turretConfig.damage;
+                    turret.PierceDamage = turretConfig.pierceDamage;
                     turret.FireDamage = turretConfig.fireDamage;
                     turret.FrostDamage = turretConfig.frostDamage;
                     turret.LightningDamage = turretConfig.lightningDamage;
@@ -90,7 +91,7 @@ namespace MoreDefenses
                     var turretPiece = TurretConfig.Convert(prefab, turretConfig);
 
                     // Jotunn code is currently not setting the description, potentially a bug
-                    turretPiece.Piece.m_description = turretConfig.description;
+                    //turretPiece.Piece.m_description = turretConfig.description;
 
                     PieceManager.Instance.AddPiece(turretPiece);
                 }
