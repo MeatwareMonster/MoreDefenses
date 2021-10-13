@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MoreDefenses;
+using MoreDefenses.Models;
 using UnityEngine;
 
 public class Turret : MonoBehaviour
@@ -81,6 +82,20 @@ public class Turret : MonoBehaviour
             var projectileParticle = m_projectileParticleSystem.gameObject.AddComponent<ProjectileParticle>();
             projectileParticle.HitData = m_hitData;
         }
+    }
+
+    public void Initialize(TurretConfig turretConfig)
+    {
+        Range = turretConfig.range;
+        Damage = turretConfig.damage;
+        PierceDamage = turretConfig.pierceDamage;
+        FireDamage = turretConfig.fireDamage;
+        FrostDamage = turretConfig.frostDamage;
+        LightningDamage = turretConfig.lightningDamage;
+        PoisonDamage = turretConfig.poisonDamage;
+        SpiritDamage = turretConfig.spiritDamage;
+        FireInterval = turretConfig.fireInterval;
+        DamageRadius = turretConfig.damageRadius;
     }
 
     private void SetVolume(object sender, EventArgs e)

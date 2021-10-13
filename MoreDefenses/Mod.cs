@@ -78,16 +78,7 @@ namespace MoreDefenses
                     // Load prefab from asset bundle and apply config
                     var prefab = m_assetBundles[turretConfig.bundleName].LoadAsset<GameObject>(turretConfig.prefabPath);
                     var turret = prefab.AddComponent<Turret>();
-                    turret.Range = turretConfig.range;
-                    turret.Damage = turretConfig.damage;
-                    turret.PierceDamage = turretConfig.pierceDamage;
-                    turret.FireDamage = turretConfig.fireDamage;
-                    turret.FrostDamage = turretConfig.frostDamage;
-                    turret.LightningDamage = turretConfig.lightningDamage;
-                    turret.PoisonDamage = turretConfig.poisonDamage;
-                    turret.SpiritDamage = turretConfig.spiritDamage;
-                    turret.FireInterval = turretConfig.fireInterval;
-                    turret.DamageRadius = turretConfig.damageRadius;
+                    turret.Initialize(turretConfig);
                     var turretPiece = TurretConfig.Convert(prefab, turretConfig);
 
                     // Jotunn code is currently not setting the description, potentially a bug
