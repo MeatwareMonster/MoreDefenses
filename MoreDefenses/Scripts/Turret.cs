@@ -55,7 +55,7 @@ public class Turret : MonoBehaviour
         m_bounds = GetComponent<BoxCollider>().bounds;
 
         m_nview = GetComponent<ZNetView>();
-        m_nview.Register("Fire", RPC_Fire);
+        m_nview.Register<Vector3>("Fire", RPC_Fire);
 
         m_hitData = new HitData
         {
@@ -165,7 +165,7 @@ public class Turret : MonoBehaviour
                     else
                     {
                         //Jotunn.Logger.LogDebug("Fire");
-                        m_nview.InvokeRPC(ZNetView.Everybody, "Fire");
+                        m_nview.InvokeRPC(ZNetView.Everybody, "Fire", m_target.transform.position);
                         if (m_projectileParticleSystem == null)
                         {
                             if (DamageRadius == 0)
@@ -213,14 +213,14 @@ public class Turret : MonoBehaviour
         return !Physics.Raycast(m_bounds.center, vector.normalized, vector.magnitude, m_viewBlockMask);
     }
 
-    private void RPC_Fire(long sender)
+    private void RPC_Fire(long sender, Vector3 impactPosition)
     {
         m_audioSource.Play();
         if (m_outputParticleSystem != null) m_outputParticleSystem.Play();
         if (m_projectileParticleSystem != null) m_projectileParticleSystem.Play();
         if (m_impactParticleSystem != null)
         {
-            m_impactParticleSystem.transform.position = m_target.transform.position;
+            m_impactParticleSystem.transform.position = impactPosition;
             m_impactParticleSystem.Play();
         }
     }
