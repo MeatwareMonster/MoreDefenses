@@ -65,10 +65,21 @@ namespace MoreDefenses
         private void AddTurrets()
         {
             var turretConfigs = new List<TurretConfig>();
+            var customConfigFiles = Directory.Exists($"{ModLocation}/Assets/CustomConfigs") ? Directory.GetFiles($"{ModLocation}/Assets/CustomConfigs").Where(file => Path.GetFileName(file) != "__folder_managed_by_vortex").ToDictionary(file => Path.GetFileName(file)) : new Dictionary<string, string>();
 
             foreach (var file in Directory.GetFiles($"{ModLocation}/Assets/Configs").Where(file => Path.GetFileName(file) != "__folder_managed_by_vortex"))
             {
-                turretConfigs.AddRange(TurretConfigManager.LoadTurretsFromJson(file));
+                string configPath;
+                if (customConfigFiles.TryGetValue(Path.GetFileName(file), out var customConfigFile))
+                {
+                    configPath = customConfigFile;
+                }
+                else
+                {
+                    configPath = file;
+                }
+
+                turretConfigs.AddRange(TurretConfigManager.LoadTurretsFromJson(configPath));
             }
 
             turretConfigs.ForEach(turretConfig =>
