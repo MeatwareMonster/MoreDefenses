@@ -17,6 +17,7 @@ public class Turret : MonoBehaviour
     public float PoisonDamage = 0f;
     public float SpiritDamage = 0f;
     public float DamageRadius = 0f;
+    public bool CanShootFlying = true;
 
     private HitData m_hitData;
 
@@ -97,6 +98,7 @@ public class Turret : MonoBehaviour
         SpiritDamage = turretConfig.spiritDamage;
         FireInterval = turretConfig.fireInterval;
         DamageRadius = turretConfig.damageRadius;
+        CanShootFlying = turretConfig.canShootFlying;
     }
 
     public bool IsOwner()
@@ -193,7 +195,12 @@ public class Turret : MonoBehaviour
         List<Character> allCharacters = Character.GetAllCharacters();
         foreach (Character character in allCharacters)
         {
-            if (character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead() && IsCharacterInRange(character) && CanSeeCharacter(character))
+            if (character.m_faction != Character.Faction.Players
+                && (CanShootFlying || !character.IsFlying())
+                && !character.IsTamed()
+                && !character.IsDead()
+                && IsCharacterInRange(character)
+                && CanSeeCharacter(character))
             {
                 //Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
                 m_target = character;

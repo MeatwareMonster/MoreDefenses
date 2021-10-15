@@ -7,8 +7,9 @@
     "pieceTable": "Hammer",
     "enabled": true,
     "fireInterval": 2,
-    "pierceDamage": 40,
+    "pierceDamage": 50,
     "range": 20,
+    "canShootFlying": true,
     "resources": [
       {
         "item": "Bronze",
@@ -30,6 +31,7 @@
     "fireInterval": 1,
     "damage": 25,
     "range": 20,
+    "canShootFlying": true,
     "resources": [
       {
         "item": "Iron",
@@ -52,6 +54,7 @@
     "frostDamage": 25,
     "range": 20,
     "damageRadius": 4,
+    "canShootFlying": false,
     "resources": [
       {
         "item": "Silver",

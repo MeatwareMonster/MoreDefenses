@@ -43,6 +43,7 @@ namespace MoreDefenses.Models
         public float spiritDamage;
         public float range;
         public float damageRadius;
+        public bool canShootFlying;
         public List<TurretConfigRequirement> resources;
 
         public static CustomPiece Convert(GameObject prefab, TurretConfig turretConfig)
