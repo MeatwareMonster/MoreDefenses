@@ -25,7 +25,7 @@ namespace MoreDefenses
     {
         public const string PluginGUID = "MeatwareMonster.MoreDefenses";
         public const string PluginName = "More Defenses";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.1.0";
 
         public static ConfigEntry<int> TurretVolume;
 
