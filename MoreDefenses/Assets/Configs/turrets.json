@@ -65,5 +65,27 @@
         "amount": 10
       }
     ]
+  },
+  {
+    "name": "Pumpkin",
+    "bundleName": "turrets",
+    "prefabPath": "Assets/_Project/Prefabs/MMPumpkin.prefab",
+    "description": "Fire pumpkin.",
+    "pieceTable": "Hammer",
+    "enabled": true,
+    "fireDamage": 10,
+    "range": 10,
+    "canShootFlying": true,
+    "isContinuous":  true,
+    "resources": [
+      {
+        "item": "Bronze",
+        "amount": 20
+      },
+      {
+        "item": "FineWood",
+        "amount": 20
+      }
+    ]
   }
 ]

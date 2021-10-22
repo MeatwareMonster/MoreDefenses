@@ -18,6 +18,7 @@ public class Turret : MonoBehaviour
     public float SpiritDamage = 0f;
     public float DamageRadius = 0f;
     public bool CanShootFlying = true;
+    public bool IsContinuous = false;
 
     private HitData m_hitData;
 
@@ -28,6 +29,7 @@ public class Turret : MonoBehaviour
     private Character m_target;
     private float m_updateTargetTimer;
     private float m_shootTimer;
+    private bool m_isFiring;
 
     private AudioSource m_audioSource;
     private ParticleSystem m_outputParticleSystem;
@@ -57,6 +59,7 @@ public class Turret : MonoBehaviour
 
         m_nview = GetComponent<ZNetView>();
         m_nview.Register<Vector3>("Fire", RPC_Fire);
+        m_nview.Register("StopFire", RPC_StopFire);
 
         m_hitData = new HitData
         {
@@ -99,6 +102,7 @@ public class Turret : MonoBehaviour
         FireInterval = turretConfig.fireInterval;
         DamageRadius = turretConfig.damageRadius;
         CanShootFlying = turretConfig.canShootFlying;
+        IsContinuous = turretConfig.isContinuous;
     }
 
     public bool IsOwner()
@@ -136,6 +140,7 @@ public class Turret : MonoBehaviour
 
         if (m_target == null)
         {
+            if (IsContinuous && m_isFiring) m_nview.InvokeRPC(ZNetView.Everybody, "StopFire");
             if (m_updateTargetTimer < 0)
             {
                 StartCoroutine(FindTarget());
@@ -145,39 +150,33 @@ public class Turret : MonoBehaviour
 
         if (m_target != null)
         {
-            if (m_target.IsDead())
+            if (m_target.IsDead() || !IsCharacterInRange(m_target) || !CanSeeCharacter(m_target))
             {
                 m_target = null;
+                if (IsContinuous) m_nview.InvokeRPC(ZNetView.Everybody, "StopFire");
+                //Jotunn.Logger.LogDebug("Target lost");
             }
             else
             {
-                // Debug targeting
-                //m_lineRenderer.SetPosition(0, Bounds.center);
-                //m_lineRenderer.SetPosition(1, Target.GetCenterPoint());
-
                 transform.LookAt(m_target.transform);
 
-                if (m_shootTimer < 0)
+                if (!IsContinuous && m_shootTimer < 0)
                 {
-                    if (!IsCharacterInRange(m_target) || !CanSeeCharacter(m_target))
+                    // Debug targeting
+                    //m_lineRenderer.SetPosition(0, Bounds.center);
+                    //m_lineRenderer.SetPosition(1, Target.GetCenterPoint());
+
+                    //Jotunn.Logger.LogDebug("Fire");
+                    m_nview.InvokeRPC(ZNetView.Everybody, "Fire", m_target.transform.position);
+                    if (m_projectileParticleSystem == null)
                     {
-                        m_target = null;
-                        //Jotunn.Logger.LogDebug("Target lost");
-                    }
-                    else
-                    {
-                        //Jotunn.Logger.LogDebug("Fire");
-                        m_nview.InvokeRPC(ZNetView.Everybody, "Fire", m_target.transform.position);
-                        if (m_projectileParticleSystem == null)
+                        if (DamageRadius == 0)
                         {
-                            if (DamageRadius == 0)
-                            {
-                                m_target.Damage(m_hitData);
-                            }
-                            else
-                            {
-                                DamageAreaTargets(m_target.transform.position);
-                            }
+                            m_target.Damage(m_hitData);
+                        }
+                        else
+                        {
+                            DamageAreaTargets(m_target.transform.position);
                         }
                     }
 
@@ -204,6 +203,7 @@ public class Turret : MonoBehaviour
             {
                 //Jotunn.Logger.LogDebug($"Target changed to {character.m_name}");
                 m_target = character;
+                if (IsContinuous) m_nview.InvokeRPC(ZNetView.Everybody, "Fire", m_target.transform.position);
                 yield break;
             }
         }
@@ -230,6 +230,21 @@ public class Turret : MonoBehaviour
             m_impactParticleSystem.transform.position = impactPosition;
             m_impactParticleSystem.Play();
         }
+
+        if (IsContinuous)
+        {
+            m_isFiring = true;
+        }
+    }
+
+    private void RPC_StopFire(long sender)
+    {
+        Jotunn.Logger.LogDebug("Stop firing");
+        m_audioSource.Stop();
+        if (m_outputParticleSystem != null && !m_outputParticleSystem.isStopped) m_outputParticleSystem.Stop();
+        if (m_projectileParticleSystem != null && !m_projectileParticleSystem.isStopped) m_projectileParticleSystem.Stop();
+
+        m_isFiring = false;
     }
 
     public void SetVolume(float volume)
