@@ -33,6 +33,7 @@ namespace MoreDefenses.Models
         public string description;
         public string pieceTable;
         public bool enabled;
+        public string type;
         public float fireInterval;
         public float damage;
         public float pierceDamage;

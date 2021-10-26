@@ -19,6 +19,14 @@ public class Turret : MonoBehaviour
     public float DamageRadius = 0f;
     public bool CanShootFlying = true;
     public bool IsContinuous = false;
+    public TurretType Type = TurretType.Gun;
+    public enum TurretType
+    {
+        Gun,
+        Cannon,
+        Projectile,
+        Flamethrower
+    }
 
     private HitData m_hitData;
 
@@ -91,6 +99,7 @@ public class Turret : MonoBehaviour
 
     public void Initialize(TurretConfig turretConfig)
     {
+        Type = (TurretType)Enum.Parse(typeof(TurretType), turretConfig.type, true);
         Range = turretConfig.range;
         Damage = turretConfig.damage;
         PierceDamage = turretConfig.pierceDamage;
@@ -160,25 +169,29 @@ public class Turret : MonoBehaviour
             {
                 transform.LookAt(m_target.transform);
 
-                if (!IsContinuous && m_shootTimer < 0)
+                if (m_shootTimer < 0)
                 {
+                    if (!IsContinuous) m_nview.InvokeRPC(ZNetView.Everybody, "Fire", m_target.transform.position);
+                    switch (Type)
+                    {
+                        case TurretType.Gun:
+                            m_target.Damage(m_hitData);
+                            break;
+                        case TurretType.Cannon:
+                            DamageAreaTargets(m_target.transform.position);
+                            break;
+                        case TurretType.Flamethrower:
+                            DamageFlamethrowerTargets();
+                            break;
+                        default:
+                            break;
+                    }
+
                     // Debug targeting
                     //m_lineRenderer.SetPosition(0, Bounds.center);
                     //m_lineRenderer.SetPosition(1, Target.GetCenterPoint());
 
                     //Jotunn.Logger.LogDebug("Fire");
-                    m_nview.InvokeRPC(ZNetView.Everybody, "Fire", m_target.transform.position);
-                    if (m_projectileParticleSystem == null)
-                    {
-                        if (DamageRadius == 0)
-                        {
-                            m_target.Damage(m_hitData);
-                        }
-                        else
-                        {
-                            DamageAreaTargets(m_target.transform.position);
-                        }
-                    }
 
                     m_shootTimer = FireInterval;
                 }
@@ -255,6 +268,18 @@ public class Turret : MonoBehaviour
     private void DamageAreaTargets(Vector3 position)
     {
         var hits = Physics.OverlapSphere(position, DamageRadius, m_rayMaskSolids);
+        foreach (var hit in hits)
+        {
+            if (hit.TryGetComponent(out Character character) && character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead())
+            {
+                character.Damage(m_hitData);
+            }
+        }
+    }
+
+    private void DamageFlamethrowerTargets()
+    {
+        var hits = Physics.OverlapCapsule(transform.position, transform.position + transform.forward * Range, 1, m_rayMaskSolids);
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent(out Character character) && character.m_faction != Character.Faction.Players && !character.IsTamed() && !character.IsDead())
