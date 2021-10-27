@@ -252,7 +252,6 @@ public class Turret : MonoBehaviour
 
     private void RPC_StopFire(long sender)
     {
-        Jotunn.Logger.LogDebug("Stop firing");
         m_audioSource.Stop();
         if (m_outputParticleSystem != null && !m_outputParticleSystem.isStopped) m_outputParticleSystem.Stop();
         if (m_projectileParticleSystem != null && !m_projectileParticleSystem.isStopped) m_projectileParticleSystem.Stop();

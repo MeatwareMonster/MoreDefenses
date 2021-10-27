@@ -70,10 +70,10 @@
     ]
   },
   {
-    "name": "Pumpkin",
+    "name": "Hot Pumpkin",
     "bundleName": "turrets",
-    "prefabPath": "Assets/_Project/Prefabs/MMPumpkin.prefab",
-    "description": "Fire pumpkin.",
+    "prefabPath": "Assets/_Project/Prefabs/MMHotPumpkin.prefab",
+    "description": "Careful, it's hot!",
     "pieceTable": "Hammer",
     "enabled": true,
     "type": "Flamethrower",
@@ -84,12 +84,12 @@
     "isContinuous": true,
     "resources": [
       {
-        "item": "Bronze",
-        "amount": 20
+        "item": "SurtlingCore",
+        "amount": 10
       },
       {
-        "item": "FineWood",
-        "amount": 20
+        "item": "Turnip",
+        "amount": 1
       }
     ]
   }
