@@ -261,7 +261,7 @@ public class Turret : MonoBehaviour
 
     public void SetVolume(float volume)
     {
-        m_audioSource.volume = volume / 100 * 0.25f;
+        m_audioSource.volume = volume / 100;
     }
 
     private void DamageAreaTargets(Vector3 position)
