@@ -84,12 +84,12 @@
     "isContinuous": true,
     "resources": [
       {
-        "item": "SurtlingCore",
-        "amount": 10
-      },
-      {
         "item": "Turnip",
         "amount": 1
+      },
+      {
+        "item": "Resin",
+        "amount": 10
       }
     ]
   }
