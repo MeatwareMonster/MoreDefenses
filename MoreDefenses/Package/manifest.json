@@ -1,8 +1,8 @@
 ﻿{
   "name": "MoreDefenses",
   "description": "Adds more defenses.",
-  "version_number": "1.1.1",
-  "website_url": "https://github.com/MeatwareMonster",
+  "version_number": "1.2.0",
+  "website_url": "https://discord.gg/xcCnhNf4hN",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.1502",
     "ValheimModding-Jotunn-2.3.7"

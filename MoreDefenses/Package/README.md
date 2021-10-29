@@ -2,6 +2,7 @@
 
 Adds a variety of turrets to the game in an extensible way.
 
+Flamethower update: https://www.youtube.com/watch?v=jwkyXhGucHI \
 Ballista and frost cannon update: https://www.youtube.com/watch?v=Cxf_YfS557k \
 Showcase and full guide: https://www.youtube.com/watch?v=xA5IqVY_Msc
 
@@ -10,6 +11,7 @@ Recipes:
 - Ballista: Bronze and Fine Wood
 - Steampunk Turret: Iron and Surtling Cores
 - Frost Cannon: Silver and Freeze Glands
+- Hot Pumpkin: Resin and a Turnip
 
 Tested with dedicated servers, and only required by clients. But probably don't take turrets where people don't want them.
 
