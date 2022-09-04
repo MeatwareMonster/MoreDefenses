@@ -88,6 +88,11 @@ namespace MoreDefenses
         {
           // Load prefab from asset bundle and apply config
           var prefab = m_assetBundles[turretConfig.bundleName].LoadAsset<GameObject>(turretConfig.prefabPath);
+          var newPrefab = PrefabManager.Instance.CreateClonedPrefab(turretConfig.name, prefab);
+          if (newPrefab != null)
+          {
+            prefab = newPrefab;
+          }
           var turret = prefab.AddComponent<Turret>();
           turret.Initialize(turretConfig);
           var turretPiece = TurretConfig.Convert(prefab, turretConfig);
